@@ -13,6 +13,7 @@ type Args struct {
 	Del int 
 	Edit string 
 	Toggle int
+	Inpro int
 	List bool
 }
 
@@ -24,6 +25,7 @@ func NewArg() *Args {
 	flag.StringVar(&arg.Edit, "edit", "", "Edit task title use id:newTitle")
 	flag.IntVar(&arg.Del, "delete", -1, "Delete a task by index")
 	flag.IntVar(&arg.Toggle, "toggle", -1, "Update task to completed")
+	flag.IntVar(&arg.Inpro, "inpro", -1, "Update task to be inprogress")
 	flag.BoolVar(&arg.List, "list", false, "show the current todos")
 
 	flag.Parse()
@@ -57,6 +59,8 @@ func (arg *Args) Execute(t *Todos) {
 		t.toggle(arg.Toggle)
 	case arg.Del != -1:
 		t.del(arg.Del)
+	case arg.Inpro != -1:
+		t.inpro(arg.Inpro)
 
 	default:
 		fmt.Println("Ivalid Cmd")
