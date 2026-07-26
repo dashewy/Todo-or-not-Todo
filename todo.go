@@ -11,6 +11,7 @@ import (
 
 type Todo struct {
 	Task string
+	InproTask string
 	Completed bool
 	CreatedAt time.Time
 	CompletedAt *time.Time 
@@ -35,6 +36,7 @@ func (t *Todos) add(task string) {
 	
 	todo := Todo{ 
 		Task: task,
+		InproTask: "",
 		Completed: false,
 		CreatedAt: time.Now() ,
 		CompletedAt: nil,
@@ -59,14 +61,21 @@ func (t *Todos) toggle(idx int) error {
 	if err := t.checkIdx(idx); err != nil {
 		return err 
 	}
+	if t.Items[idx].Task != "" {
+		err := errors.New("Task not in progress")
+		fmt.Println(err)
+		return err
+	}
   // want to be able to taggle on and off 
 	
-	status := t.Items[0].Completed
+	status := t.Items[idx].Completed
 
 	if !status {
 		t.Items[idx].Completed = true
 		completedTime := time.Now()
 		t.Items[idx].CompletedAt = &completedTime
+		t.Items[idx].Task = t.Items[idx].InproTask
+		t.Items[idx].InproTask = ""
 	}	else {
 		t.Items[idx].Completed = false
 		t.Items[idx].CompletedAt = nil 
@@ -87,11 +96,28 @@ func (t *Todos) edit(idx int, newTitle string) error {
 	
 }
 
+func (t *Todos) inpro(idx int) error {
+
+	if err := t.checkIdx(idx); err != nil {
+		return err 
+	}
+	
+  if t.Items[idx].InproTask == "" {	
+		t.Items[idx].InproTask = t.Items[idx].Task
+		t.Items[idx].Task = ""
+	} else {
+		t.Items[idx].Task = t.Items[idx].InproTask
+		t.Items[idx].InproTask = ""
+	}
+
+	return nil
+}
+
 func (t *Todos) printTab() {
 	
 	table := table.New(os.Stdout)
 	table.SetRowLines(false)
-	table.SetHeaders("#", "Task", "Completed", "Created At", "Completed At")
+	table.SetHeaders("#", "Completed", "Task", "In progress", "Created At", "Completed At")
 
 	for idx, todo := range t.Items {
 		compVal := "❌"
@@ -106,7 +132,7 @@ func (t *Todos) printTab() {
 			}
 		}
 
-		table.AddRow(strconv.Itoa(idx), todo.Task, compVal, todo.CreatedAt.Format(time.RFC1123), completedAt)
+		table.AddRow(strconv.Itoa(idx), compVal, todo.Task, todo.InproTask, todo.CreatedAt.Format(time.RFC1123), completedAt)
 	}
 	table.Render()
 }
