@@ -61,24 +61,28 @@ func (t *Todos) toggle(idx int) error {
 	if err := t.checkIdx(idx); err != nil {
 		return err 
 	}
-	if t.Items[idx].Task != "" {
-		err := errors.New("Task not in progress")
-		fmt.Println(err)
-		return err
-	}
+
   // want to be able to taggle on and off 
 	
-	status := t.Items[idx].Completed
+	item := &t.Items[idx]
 
-	if !status {
-		t.Items[idx].Completed = true
+	if !item.Completed {
+	
+		if t.Items[idx].Task != "" {
+			err := errors.New("Task not in progress")
+			fmt.Println(err)
+			return err
+		}
+
+		item.Completed = true
 		completedTime := time.Now()
-		t.Items[idx].CompletedAt = &completedTime
-		t.Items[idx].Task = t.Items[idx].InproTask
-		t.Items[idx].InproTask = ""
+		item.CompletedAt = &completedTime
+		
+		item.Task = t.Items[idx].InproTask
+		item.InproTask = ""
 	}	else {
-		t.Items[idx].Completed = false
-		t.Items[idx].CompletedAt = nil 
+		item.Completed = false
+		item.CompletedAt = nil 
 	}
 		
 	return nil
@@ -89,9 +93,13 @@ func (t *Todos) edit(idx int, newTitle string) error {
 	if err := t.checkIdx(idx); err != nil {
 		return err 
 	}
-	
-	t.Items[idx].Task = newTitle 
+	item := &t.Items[idx]
 
+	if item.InproTask != "" {
+		item.InproTask = newTitle
+	} else {
+		item.Task = newTitle 
+	}
 	return nil 
 	
 }
@@ -102,15 +110,40 @@ func (t *Todos) inpro(idx int) error {
 		return err 
 	}
 	
-  if t.Items[idx].InproTask == "" {	
-		t.Items[idx].InproTask = t.Items[idx].Task
-		t.Items[idx].Task = ""
+	item := &t.Items[idx]
+	
+	if item.Completed {
+		err := errors.New("item already complete, reset to change")
+		fmt.Println(err)
+		return err 
+	}
+
+  if item.InproTask == "" {	
+		item.InproTask = item.Task
+		item.Task = ""
 	} else {
-		t.Items[idx].Task = t.Items[idx].InproTask
-		t.Items[idx].InproTask = ""
+		item.Task = item.InproTask
+		item.InproTask = ""
 	}
 
 	return nil
+}
+
+func (t *Todos) getClosed() []string {
+	var openItems []Todo
+	var closedItems []string
+	
+	for _, item := range t.Items {
+
+		if item.Completed {
+			closedItems = append(closedItems, item.Task)
+		} else {
+			openItems = append(openItems, item)
+		}
+	}
+	// seperates completed and not completed instead of deleting index 
+	t.Items = openItems 
+	return closedItems
 }
 
 func (t *Todos) printTab() {
