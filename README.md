@@ -67,6 +67,5 @@ go build -o task
      |-------(-inpro / toggle)------|
 
 ## Todo
-- 
 - fuzzy finder??
 - BubbleTea??
