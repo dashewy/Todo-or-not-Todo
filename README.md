@@ -26,8 +26,9 @@ A lightweight, high-performance command-line task manager built in Go. Designed 
 Ensure you have [Go](https://go.dev/) installed (v1.18 or higher).
 
 ```bash
-# Clone the repository
-git clone [https://github.com/yourusername/go-task-cli.git](https://github.com/yourusername/go-task-cli.git)
+# Using the release
+cd ~/Downloads
+chmod +x task-darwin-arm64
 
 # Navigate into the project
 cd go-task-cli
