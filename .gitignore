@@ -1,4 +1,4 @@
 *.json
 *.exe
 dist/
-*.png
+.DS_Store
