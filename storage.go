@@ -19,7 +19,6 @@ func (s *Storage[T]) Save(data T) error {
 	
 	dir := "todos"
 	
-
 	root, err := os.UserHomeDir()
 	if err != nil {
 		return fmt.Errorf("error saving to home dir: %w", err)
@@ -27,7 +26,6 @@ func (s *Storage[T]) Save(data T) error {
   
 	todosPath := filepath.Join(root, dir)
   
-
 	err = os.MkdirAll(todosPath, 0755)
 	if err != nil {
 		return fmt.Errorf("Error making dir: %w", err)
@@ -57,7 +55,6 @@ func (s *Storage[T]) Load() (T, error) {
 	}
 
 	fullPath := filepath.Join(root, "todos", s.fileName)
-
 	
 	file, err := os.Open(fullPath)
 	if err != nil {
