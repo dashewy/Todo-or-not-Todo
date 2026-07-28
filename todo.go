@@ -155,12 +155,12 @@ func (t *Todos) printTab() {
 	tab.SetAlignment(table.AlignCenter, table.AlignCenter,)
 
 	for idx, todo := range t.Items {
-		compVal := " ❌ "
+		compVal := "❌"
 		completedAt := ""
 	
 
 		if todo.Completed {
-			compVal = " ✅ " 
+			compVal = "✅" 
 		
 			if todo.CompletedAt != nil {
 				completedAt = todo.CompletedAt.Format(time.RFC1123)
