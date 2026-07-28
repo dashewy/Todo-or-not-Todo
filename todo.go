@@ -148,24 +148,26 @@ func (t *Todos) getClosed() []string {
 
 func (t *Todos) printTab() {
 	
-	table := table.New(os.Stdout)
-	table.SetRowLines(false)
-	table.SetHeaders("#", "Completed", "Task", "In progress", "Created At", "Completed At")
+	tab := table.New(os.Stdout)
+	tab.SetRowLines(false)
+	tab.SetHeaders("#", "Completed", "Task", "In progress", "Created At", "Completed At")
+	
+	tab.SetAlignment(table.AlignCenter, table.AlignCenter,)
 
 	for idx, todo := range t.Items {
-		compVal := "❌"
+		compVal := " ❌ "
 		completedAt := ""
 	
 
 		if todo.Completed {
-			compVal = "✅"
+			compVal = " ✅ " 
 		
 			if todo.CompletedAt != nil {
 				completedAt = todo.CompletedAt.Format(time.RFC1123)
 			}
 		}
 
-		table.AddRow(strconv.Itoa(idx), compVal, todo.Task, todo.InproTask, todo.CreatedAt.Format(time.RFC1123), completedAt)
+		tab.AddRow(strconv.Itoa(idx), compVal, todo.Task, todo.InproTask, todo.CreatedAt.Format(time.RFC1123), completedAt)
 	}
-	table.Render()
+	tab.Render()
 }
