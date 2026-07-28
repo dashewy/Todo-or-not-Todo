@@ -28,10 +28,16 @@ Ensure you have [Go](https://go.dev/) installed (v1.18 or higher).
 ```bash
 # Using the release
 cd ~/Downloads
-chmod +x task-darwin-arm64
+chmod +x todo-app-arm64
+
+# if you downloaded from realese 1.0.0, to save history
+mkdir ~/todos
+mv todos.json ~/todos
+mv history.json ~/todos
+# the app will make all of this for you if you download >= 1.1.0
 
 # Navigate into the project
-cd go-task-cli
+cd todo-or-not-todo
 
 # Install dependencies
 go mod tidy
