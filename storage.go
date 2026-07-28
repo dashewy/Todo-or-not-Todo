@@ -1,7 +1,9 @@
 package main 
 
 import (
+	"fmt"
 	"os"
+	"path/filepath"
 	"encoding/json"
 )
 
@@ -15,9 +17,25 @@ func NewStorage[T any](fileName string) *Storage[T] {
 
 func (s *Storage[T]) Save(data T) error {
 	
-	file, err := os.Create(s.fileName)
+	dir := "todos"
+	
+	root, err := os.UserHomeDir()
 	if err != nil {
-		return err 
+		return fmt.Errorf("error saving to home dir: %w", err)
+	}
+  
+	todosPath := filepath.Join(root, dir)
+  
+	err = os.MkdirAll(todosPath, 0755)
+	if err != nil {
+		return fmt.Errorf("Error making dir: %w", err)
+	}
+	
+	fullPath := filepath.Join(root, dir, s.fileName)
+
+	file, err := os.Create(fullPath)
+	if err != nil {
+		return fmt.Errorf("Err creating file: %w", err) 
 	}
 	defer file.Close()
 
@@ -28,11 +46,19 @@ func (s *Storage[T]) Save(data T) error {
 }
 
 func (s *Storage[T]) Load() (T, error) {
-	
-	var data T 
-	file, err := os.Open(s.fileName)
+
+	var data T
+
+	root, err := os.UserHomeDir()
 	if err != nil {
-		return data, err 
+		return data, fmt.Errorf("error finding home dir: %w", err)
+	}
+
+	fullPath := filepath.Join(root, "todos", s.fileName)
+	
+	file, err := os.Open(fullPath)
+	if err != nil {
+		return data, fmt.Errorf("error opening file: %w", err) 
 	}
 	defer file.Close()
 
